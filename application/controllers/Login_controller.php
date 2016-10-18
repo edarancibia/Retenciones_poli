@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed'); 
 
 class Login_controller extends CI_Controller{
 
@@ -8,11 +8,15 @@ class Login_controller extends CI_Controller{
 		$this->load->model('Login_model');
 	}
 
-	public function login($rut,$clave)
+	public function index(){
+
+	}
+
+	function login()
 	{
 		$rut = $this->input->post('rut');
 		$clave = $this->input->post('clave');
-		$data = $this->Login_model->existeUsuario($rut,$clave)
+		$data = $this->Login_model->existeUsuario($rut,$clave);
 		echo json_encode($data);
 	}
 

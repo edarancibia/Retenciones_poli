@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>Retenciones de Profesionales Poli</title>
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.css"); ?>" />
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/toastr.css"); ?>">
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/jqconfirm.css"); ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/jquery-ui.css"); ?>">
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
 			
 	<script type="text/javascript" src="<?php echo base_url("assets/js/principal.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/js/toastr.min.js"); ?>"></script>
-	<script type="text/javascript" src="<?php echo base_url("assets/js/jqwidgets/jqw/jqxcore.js"); ?>"></script>
-	<script type="text/javascript" src="<?php echo base_url("assets/js/jqwidgets/jqw/jqxdata.js"); ?>"></script>
-	<script type="text/javascript" src="<?php echo base_url("assets/js/jqwidgets/jqw/jqxinput.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/js/jquery-confirm/jquery.confirm.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/js/login.js"); ?>"></script>
 	<script type="text/javascript">
@@ -27,6 +27,13 @@
 
 		$(document).ready(function(){
 			
+			//  - -  autocompletar - - - 
+			$('#buscaMed').autocomplete({
+				source: "<?php echo base_url('index.php/Welcome/getMedicos'); ?>",
+				minLength: 2
+			});
+
+			// - - nUEVO REGISTRO
 			$('#btnNuevo').on("click",function(){
 			
 				var rut = $('#buscaMed').val();
@@ -58,7 +65,6 @@
 				}
 
 				
-				//nuevaRetencion();
 
 				function nuevaRetencion(){
 
@@ -68,6 +74,7 @@
 						data: {rut: rut, porcentaje: porcentaje},
 						success:function(){
 							toastr.success('Datos guardados exitosamente');
+							$('#buscaMed').focus();
 						},
 						error:function(){
 							console.log('error insert ajax');
@@ -84,51 +91,25 @@
 				var porcentaje = $('#txtporcen').val();
 
 				if (confirm("¿Está seguro de modificar el registro?")) {
-					$.ajax({
-						type: 'POST',
-						url:  "<?php echo base_url('index.php/Welcome/update'); ?>",
-						data: {rut: rut, porcentaje: porcentaje},
-						success:function(){
-							toastr.info('Modificado exitosamente');
-							limpiar();
-						},
-						error:function(){
-							toastr.error('Error al intentar modificar datos');
-						}
-					});
-				    
+					if (rut > 1) {
+							$.ajax({
+							type: 'POST',
+							url:  "<?php echo base_url('index.php/Welcome/update'); ?>",
+							data: {rut: rut, porcentaje: porcentaje},
+							success:function(){
+								toastr.info('Modificado exitosamente');
+								limpiar();
+								$('#buscaMed').focus();
+							},
+							error:function(){
+								toastr.error('Error al intentar modificar datos');
+							}
+						});	
+					}else{
+						toastr.warning('Ingrese médico');
+					}
 				}
 			});
-
-			//JQW
-			var url = "<?php echo base_url('index.php/Welcome/getMedicos'); ?>";
-			var source = {
-				datatype: 'json',
-				datafields: [
-				 {name: 'RUT_NUM'},
-				 {name: 'NOMBRE'}
-				],
-				url: url
-			};
-
-			 var dataAdapter = new $.jqx.dataAdapter(source);
-
-			$("#jqxInput").jqxInput({ source: dataAdapter, placeHolder: "Busqueda de Médicos:", displayMember: "NOMBRE", valueMember: "RUT_NUM", width: 400, height: 25});
-
-			 $("#jqxInput").on('select', function (event) {
-                    if (event.args) {
-                        var item = event.args.item;
-                        if (item) {
-                            var valueelement = $("<div></div>");
-                            valueelement.text("Value: " + item.value);
-                            var labelelement = $("<div></div>");
-                            labelelement.text("Label: " + item.label);
-                            $("#selectionlog").children().remove();
-                            $("#selectionlog").append(labelelement);
-                            $("#selectionlog").append(valueelement);
-                        }
-                    }
-                });
 
 			 //- - -   BOTON ELIMINAR - - - 
 			$('#btnElimina').on('click',function(){
@@ -152,6 +133,7 @@
 						data: {rut: rut},
 						success:function(){
 							toastr.info('Datos eliminados exitosamente');
+							$('#buscaMed').focus();
 						}
 					});
 				}
@@ -161,6 +143,42 @@
 				$('#buscaMed').val('');
 				$('#txtporcen').val('');
 			}
+
+			//- - - - LOGIN - - - - 
+
+			$('#btnLogin').on('click',function(){
+				var rut = $('#txtRut').val();
+				var clave = $('#txtClave').val();
+				//var url = '/index.php/Login_controller/login';
+				console.log(rut + clave);
+				$.ajax({
+					type: 'POST',
+					url: "<?php echo base_url('index.php/Login_controller/login'); ?>",
+					data: {rut: rut, clave: clave},
+					//dataType: 'json',
+					success:function(data1){
+						if (data1 > 0) {
+							console.log('pasa');
+							redireccionar();
+
+						}else{
+							console.log('no pasa');
+							toastr.error('Rut o contraseña incorrectos');
+						}
+						
+					},
+					error:function(){
+						console.log('error login ajax');
+					}
+				});
+			});
+
+			var pagina="<?php echo base_url('index.php/Login_controller/logeado'); ?>";
+			function redireccionar() 
+			{
+			location.href=pagina
+			} 
+			setTimeout ("redireccionar()", 20000);
 		});
 	</script>
 </head>

@@ -1,15 +1,15 @@
 <div class="container">
-	
-        <h3 >Ingreso al sistema</h3>
-        <div class="col-xs-4">
-        
-        	<input type="text" id="txtRut" class="form-control" placeholder="Rut" required autofocus onkeypress="return isNumber(event)"></input>
+<div>
+	<img src="<?php echo base_url("assets/img/minibanner.jpg"); ?>">
+</div>
+<h3>Ingreso al sistema</h3>
+<form id="form1">
+    <div class="col-xs-3">
+        <input type="text" class="form-control" id="txtRut" placeholder="Rut" autofocus=""></input>
         <br>
-        	
-        	<input type="password" id="txtClave" class="form-control" placeholder="Contraseña" required></input>
-        
-        <br><br><br>
-        <button class="btn btn-lg btn-primary btn-block" type="button" id="btnLogin">Iniciar sesión</button>
-        </div>
-      
+        <input type="password" class="form-control" id="txtClave" placeholder="Contraseña"></input>
+        <br><br>
+        <button type="button" class="btn btn-primary" id="btnLogin">Iniciar sesión</button>
+    </div>
+ </form>
 </div>

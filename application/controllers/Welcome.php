@@ -7,13 +7,14 @@ class Welcome extends CI_Controller {
 		parent::__construct();
 		$this->load->model('Medicos_model');
 		$this->load->model('Retencion_model');
+		$this->load->model('Login_model');
 	}
 
 	public function index()
 	{
 		$this->load->view('header');
-		$this->load->view('index');
-		//$this->load->view('login');
+		//$this->load->view('index');
+		$this->load->view('login');
 	}
 
 	function insert(){
@@ -40,10 +41,10 @@ class Welcome extends CI_Controller {
 	}
 
 	function getMedicos(){
-		$data = $this->Medicos_model->getAll();
-		//print_r($data);
-		//header('Content-type: application/json');
-		echo json_encode($data);
+		if (isset($_GET['term'])) {
+			$q = $_GET['term'];
+			$this->Medicos_model->get_medicos($q);
+		}
 	}
 
 	function validaMedico(){
